@@ -73,10 +73,10 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                       children: <Widget>[
                         Text(
                           '#${_color.value.toRadixString(16).substring(2)}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(60, 60, 67, 0.3),
+                            color: Theme.of(context).textTheme.caption.color,
                           ),
                         ),
                         const SizedBox(height: 16),
