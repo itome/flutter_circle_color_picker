@@ -13,14 +13,32 @@ class CircleColorPicker extends StatefulWidget {
     this.initialColor = const Color.fromARGB(255, 255, 0, 0),
   }) : super(key: key);
 
+  /// Called during a drag when the user is selecting a color.
+  ///
+  /// This callback called with latest color that user selected.
   final ValueChanged<Color> onChanged;
 
+  /// The size of widget.
+  /// Draggable area is thumb widget is included to the size,
+  /// so circle is smaller than the size.
+  ///
+  /// Default value is 280 x 280.
   final Size size;
 
+  /// The width of circle border.
+  ///
+  /// Default value is 2.
   final double strokeWidth;
 
+  /// The size of thumb for circle picker.
+  ///
+  /// Default value is 32.
   final double thumbSize;
 
+  /// Initial color for picker.
+  /// [onChanged] callback won't be called with initial value.
+  ///
+  /// Default value is Red.
   final Color initialColor;
 
   double get initialLightness => HSLColor.fromColor(initialColor).lightness;
@@ -52,6 +70,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
       height: widget.size.height,
       child: Stack(
         children: <Widget>[
+          Slider(),
           _HuePicker(
             initialHue: widget.initialHue,
             size: widget.size,
