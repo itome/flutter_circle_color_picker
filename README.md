@@ -1,7 +1,7 @@
 # flutter_circle_color_picker
 [![pub package](https://img.shields.io/pub/v/flutter_circle_color_picker.svg)](https://pub.dartlang.org/packages/flutter_circle_color_picker)
 
-A well designed circle color picker for flutter.
+A beautiful circle color picker for flutter.
 
 |Light theme|Dark Theme|
 | --- | --- |
