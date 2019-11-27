@@ -1,8 +1,8 @@
 name: flutter_circle_color_picker
-description: A new flutter plugin project.
+description: A circle color picker for flutter.
 version: 0.0.1
-author:
-homepage:
+author: Takeshi Tsukamoto <itometeam@gmail.com>
+homepage: https://github.com/itome/flutter_circle_color_picker
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
