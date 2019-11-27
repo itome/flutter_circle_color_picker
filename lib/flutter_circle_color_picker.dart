@@ -10,6 +10,7 @@ class CircleColorPicker extends StatefulWidget {
     this.size = const Size(280, 280),
     this.strokeWidth = 2,
     this.thumbSize = 32,
+    this.initialColor = const Color.fromARGB(255, 255, 0, 0),
   }) : super(key: key);
 
   final ValueChanged<Color> onChanged;
@@ -19,6 +20,12 @@ class CircleColorPicker extends StatefulWidget {
   final double strokeWidth;
 
   final double thumbSize;
+
+  final Color initialColor;
+
+  double get initialLightness => HSLColor.fromColor(initialColor).lightness;
+
+  double get initialHue => HSLColor.fromColor(initialColor).hue;
 
   @override
   _CircleColorPickerState createState() => _CircleColorPickerState();
@@ -46,6 +53,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
       child: Stack(
         children: <Widget>[
           _HuePicker(
+            initialHue: widget.initialHue,
             size: widget.size,
             strokeWidth: widget.strokeWidth,
             thumbSize: widget.thumbSize,
@@ -93,6 +101,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                           animation: _hueController,
                           builder: (context, _) {
                             return _LightnessSlider(
+                              initialLightness: widget.initialLightness,
                               width: 140,
                               thumbSize: 26,
                               hue: _hueController.value,
@@ -119,12 +128,13 @@ class _CircleColorPickerState extends State<CircleColorPicker>
     super.initState();
     _hueController = AnimationController(
       vsync: this,
+      value: widget.initialHue,
       lowerBound: 0,
       upperBound: 360,
     )..addListener(_onColorChanged);
     _lightnessController = AnimationController(
       vsync: this,
-      value: 0.5,
+      value: widget.initialLightness,
       lowerBound: 0,
       upperBound: 1,
     )..addListener(_onColorChanged);
@@ -142,6 +152,7 @@ class _LightnessSlider extends StatefulWidget {
     this.width,
     this.onChanged,
     this.thumbSize,
+    this.initialLightness,
   }) : super(key: key);
 
   final double hue;
@@ -151,6 +162,8 @@ class _LightnessSlider extends StatefulWidget {
   final ValueChanged<double> onChanged;
 
   final double thumbSize;
+
+  final double initialLightness;
 
   @override
   _LightnessSliderState createState() => _LightnessSliderState();
@@ -223,7 +236,7 @@ class _LightnessSliderState extends State<_LightnessSlider>
     super.initState();
     _lightnessController = AnimationController(
       vsync: this,
-      value: 0.5,
+      value: widget.initialLightness,
     )..addListener(() => widget.onChanged(_lightnessController.value));
     _scaleController = AnimationController(
       vsync: this,
@@ -255,6 +268,7 @@ class _HuePicker extends StatefulWidget {
     this.size,
     this.strokeWidth,
     this.thumbSize,
+    this.initialHue,
   }) : super(key: key);
 
   final ValueChanged<double> onChanged;
@@ -264,6 +278,8 @@ class _HuePicker extends StatefulWidget {
   final double strokeWidth;
 
   final double thumbSize;
+
+  final double initialHue;
 
   @override
   _HuePickerState createState() => _HuePickerState();
@@ -331,6 +347,7 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
     final minSize = min(widget.size.width, widget.size.height);
     _hueController = AnimationController(
       vsync: this,
+      value: widget.initialHue * pi / 180,
       lowerBound: 0,
       upperBound: 2 * pi,
     )..addListener(() => widget.onChanged(_hueController.value));

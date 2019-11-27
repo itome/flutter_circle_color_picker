@@ -21,6 +21,7 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Center(
           child: CircleColorPicker(
+            initialColor: _currentColor,
             onChanged: _onColorChanged,
           ),
         ),
