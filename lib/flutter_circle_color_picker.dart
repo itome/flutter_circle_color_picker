@@ -70,7 +70,6 @@ class _CircleColorPickerState extends State<CircleColorPicker>
       height: widget.size.height,
       child: Stack(
         children: <Widget>[
-          Slider(),
           _HuePicker(
             initialHue: widget.initialHue,
             size: widget.size,
