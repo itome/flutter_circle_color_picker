@@ -1,6 +1,7 @@
 name: flutter_circle_color_picker_example
 description: Demonstrates how to use the flutter_circle_color_picker plugin.
 publish_to: 'none'
+version: 0.0.1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
