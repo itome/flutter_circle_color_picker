@@ -11,6 +11,11 @@ class CircleColorPicker extends StatefulWidget {
     this.strokeWidth = 2,
     this.thumbSize = 32,
     this.initialColor = const Color.fromARGB(255, 255, 0, 0),
+    this.textStyle = const TextStyle(
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+    ),
   }) : super(key: key);
 
   /// Called during a drag when the user is selecting a color.
@@ -40,6 +45,11 @@ class CircleColorPicker extends StatefulWidget {
   ///
   /// Default value is Red.
   final Color initialColor;
+
+  /// Text style config
+  ///
+  /// Default value is Black
+  final TextStyle textStyle;
 
   double get initialLightness => HSLColor.fromColor(initialColor).lightness;
 
@@ -91,11 +101,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                       children: <Widget>[
                         Text(
                           '#${_color.value.toRadixString(16).substring(2)}',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).textTheme.caption.color,
-                          ),
+                          style: widget.textStyle,
                         ),
                         const SizedBox(height: 16),
                         Container(
