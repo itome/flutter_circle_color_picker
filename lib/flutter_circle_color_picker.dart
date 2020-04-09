@@ -132,18 +132,13 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                           ),
                         ),
                         const SizedBox(height: 16),
-                        AnimatedBuilder(
-                          animation: _hueController,
-                          builder: (context, _) {
-                            return _LightnessSlider(
-                              initialLightness: widget.initialLightness,
-                              width: 140,
-                              thumbSize: 26,
-                              hue: _hueController.value,
-                              onChanged: (lightness) {
-                                _lightnessController.value = lightness;
-                              },
-                            );
+                        _LightnessSlider(
+                          initialLightness: widget.initialLightness,
+                          width: 140,
+                          thumbSize: 26,
+                          hue: _hueController.value,
+                          onChanged: (lightness) {
+                            _lightnessController.value = lightness;
                           },
                         ),
                       ],
