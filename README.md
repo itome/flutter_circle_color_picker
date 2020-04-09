@@ -54,4 +54,15 @@ A beautiful circle color picker for flutter.
   ///
   /// Default value is Red.
   final Color initialColor;
+
+  /// Text style config
+  ///
+  /// Default value is Black
+  final TextStyle textStyle;
+
+  /// Widget builder that show color code section.
+  /// This functions is called every time color changed.
+  ///
+  /// Default is Text widget that shows rgb strings;
+  final ColorCodeBuilder colorCodeBuilder;
 ```
