@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+typedef ColorCodeBuilder = Widget Function(BuildContext context, Color color);
+
 class CircleColorPicker extends StatefulWidget {
   const CircleColorPicker({
     Key key,
@@ -16,6 +18,7 @@ class CircleColorPicker extends StatefulWidget {
       fontWeight: FontWeight.bold,
       color: Colors.black,
     ),
+    this.colorCodeBuilder,
   }) : super(key: key);
 
   /// Called during a drag when the user is selecting a color.
@@ -50,6 +53,12 @@ class CircleColorPicker extends StatefulWidget {
   ///
   /// Default value is Black
   final TextStyle textStyle;
+
+  /// Widget builder that show color code section.
+  /// This functions is called every time color changed.
+  ///
+  /// Default is Text widget that shows rgb strings;
+  final ColorCodeBuilder colorCodeBuilder;
 
   double get initialLightness => HSLColor.fromColor(initialColor).lightness;
 
@@ -99,10 +108,12 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Text(
-                          '#${_color.value.toRadixString(16).substring(2)}',
-                          style: widget.textStyle,
-                        ),
+                        widget.colorCodeBuilder != null
+                            ? widget.colorCodeBuilder(context, _color)
+                            : Text(
+                                '#${_color.value.toRadixString(16).substring(2)}',
+                                style: widget.textStyle,
+                              ),
                         const SizedBox(height: 16),
                         Container(
                           width: 64,
