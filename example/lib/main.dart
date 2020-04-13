@@ -19,10 +19,32 @@ class _MyAppState extends State<MyApp> {
           backgroundColor: _currentColor,
           title: const Text('Circle color picker sample'),
         ),
-        body: Center(
-          child: CircleColorPicker(
-            initialColor: _currentColor,
-            onChanged: _onColorChanged,
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Center(
+                child: CircleColorPicker(
+                  initialColor: _currentColor,
+                  onChanged: _onColorChanged,
+                ),
+              ),
+              Center(
+                child: CircleColorPicker(
+                  initialColor: _currentColor,
+                  onChanged: _onColorChanged,
+                  colorCodeBuilder: (context, color) {
+                    return Text(
+                      'rgb(${color.red}, ${color.green}, ${color.blue})',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
