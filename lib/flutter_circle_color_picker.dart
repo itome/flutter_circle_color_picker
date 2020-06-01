@@ -460,7 +460,7 @@ class _CirclePickerPainter extends CustomPainter {
     );
 
     final sweepShader = sweepGradient.createShader(
-      Rect.fromLTWH(0, 0, radio, radio),
+      Rect.fromCircle(center: center, radius: radio),
     );
 
     canvas.drawCircle(
