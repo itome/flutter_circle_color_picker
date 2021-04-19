@@ -32,6 +32,11 @@ A beautiful circle color picker for flutter.
   /// This callback called with latest color that user selected.
   final ValueChanged<Color> onChanged;
 
+  /// Called when drag ended.
+  ///
+  /// This callback called with latest color that user selected.
+  final ValueChanged<Color>? onEnded;
+
   /// The size of widget.
   /// Draggable area is thumb widget is included to the size,
   /// so circle is smaller than the size.
