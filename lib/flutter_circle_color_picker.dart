@@ -7,7 +7,7 @@ typedef ColorCodeBuilder = Widget Function(BuildContext context, Color color);
 
 class CircleColorPicker extends StatefulWidget {
   const CircleColorPicker({
-    Key key,
+    Key? key,
     this.onChanged,
     this.size = const Size(280, 280),
     this.strokeWidth = 2,
@@ -24,7 +24,7 @@ class CircleColorPicker extends StatefulWidget {
   /// Called during a drag when the user is selecting a color.
   ///
   /// This callback called with latest color that user selected.
-  final ValueChanged<Color> onChanged;
+  final ValueChanged<Color>? onChanged;
 
   /// The size of widget.
   /// Draggable area is thumb widget is included to the size,
@@ -58,7 +58,7 @@ class CircleColorPicker extends StatefulWidget {
   /// This functions is called every time color changed.
   ///
   /// Default is Text widget that shows rgb strings;
-  final ColorCodeBuilder colorCodeBuilder;
+  final ColorCodeBuilder? colorCodeBuilder;
 
   double get initialLightness => HSLColor.fromColor(initialColor).lightness;
 
@@ -70,8 +70,8 @@ class CircleColorPicker extends StatefulWidget {
 
 class _CircleColorPickerState extends State<CircleColorPicker>
     with TickerProviderStateMixin {
-  AnimationController _lightnessController;
-  AnimationController _hueController;
+  late AnimationController _lightnessController;
+  late AnimationController _hueController;
 
   Color get _color {
     return HSLColor.fromAHSL(
@@ -109,7 +109,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         widget.colorCodeBuilder != null
-                            ? widget.colorCodeBuilder(context, _color)
+                            ? widget.colorCodeBuilder!(context, _color)
                             : Text(
                                 '#${_color.value.toRadixString(16).substring(2)}',
                                 style: widget.textStyle,
@@ -177,7 +177,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
 
 class _LightnessSlider extends StatefulWidget {
   const _LightnessSlider({
-    Key key,
+    Key? key,
     this.hue,
     this.width,
     this.onChanged,
@@ -185,15 +185,15 @@ class _LightnessSlider extends StatefulWidget {
     this.initialLightness,
   }) : super(key: key);
 
-  final double hue;
+  final double? hue;
 
-  final double width;
+  final double? width;
 
-  final ValueChanged<double> onChanged;
+  final ValueChanged<double>? onChanged;
 
-  final double thumbSize;
+  final double? thumbSize;
 
-  final double initialLightness;
+  final double? initialLightness;
 
   @override
   _LightnessSliderState createState() => _LightnessSliderState();
@@ -201,8 +201,8 @@ class _LightnessSlider extends StatefulWidget {
 
 class _LightnessSliderState extends State<_LightnessSlider>
     with TickerProviderStateMixin {
-  AnimationController _lightnessController;
-  AnimationController _scaleController;
+  late AnimationController _lightnessController;
+  late AnimationController _scaleController;
 
   @override
   Widget build(BuildContext context) {
@@ -220,16 +220,16 @@ class _LightnessSliderState extends State<_LightnessSlider>
               width: double.infinity,
               height: 12,
               margin: EdgeInsets.symmetric(
-                horizontal: widget.thumbSize / 3,
+                horizontal: widget.thumbSize! / 3,
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(6)),
                 gradient: LinearGradient(
                   stops: [0, 0.4, 1],
                   colors: [
-                    HSLColor.fromAHSL(1, widget.hue, 1, 0).toColor(),
-                    HSLColor.fromAHSL(1, widget.hue, 1, 0.5).toColor(),
-                    HSLColor.fromAHSL(1, widget.hue, 1, 0.9).toColor(),
+                    HSLColor.fromAHSL(1, widget.hue!, 1, 0).toColor(),
+                    HSLColor.fromAHSL(1, widget.hue!, 1, 0.5).toColor(),
+                    HSLColor.fromAHSL(1, widget.hue!, 1, 0.9).toColor(),
                   ],
                 ),
               ),
@@ -239,14 +239,14 @@ class _LightnessSliderState extends State<_LightnessSlider>
               builder: (context, child) {
                 return Positioned(
                   left: _lightnessController.value *
-                      (widget.width - widget.thumbSize),
+                      (widget.width! - widget.thumbSize!),
                   child: ScaleTransition(
                     scale: _scaleController,
                     child: _Thumb(
                       size: widget.thumbSize,
                       color: HSLColor.fromAHSL(
                         1,
-                        widget.hue,
+                        widget.hue!,
                         1,
                         _lightnessController.value,
                       ).toColor(),
@@ -267,7 +267,7 @@ class _LightnessSliderState extends State<_LightnessSlider>
     _lightnessController = AnimationController(
       vsync: this,
       value: widget.initialLightness,
-    )..addListener(() => widget.onChanged(_lightnessController.value));
+    )..addListener(() => widget.onChanged!(_lightnessController.value));
     _scaleController = AnimationController(
       vsync: this,
       value: 1,
@@ -279,11 +279,11 @@ class _LightnessSliderState extends State<_LightnessSlider>
 
   void _onPanStart(DragStartDetails details) {
     _scaleController.reverse();
-    _lightnessController.value = details.localPosition.dx / widget.width;
+    _lightnessController.value = details.localPosition.dx / widget.width!;
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
-    _lightnessController.value = details.localPosition.dx / widget.width;
+    _lightnessController.value = details.localPosition.dx / widget.width!;
   }
 
   void _onPanEnd(DragEndDetails details) {
@@ -293,7 +293,7 @@ class _LightnessSliderState extends State<_LightnessSlider>
 
 class _HuePicker extends StatefulWidget {
   const _HuePicker({
-    Key key,
+    Key? key,
     this.onChanged,
     this.size,
     this.strokeWidth,
@@ -301,24 +301,24 @@ class _HuePicker extends StatefulWidget {
     this.initialHue,
   }) : super(key: key);
 
-  final ValueChanged<double> onChanged;
+  final ValueChanged<double>? onChanged;
 
-  final Size size;
+  final Size? size;
 
-  final double strokeWidth;
+  final double? strokeWidth;
 
-  final double thumbSize;
+  final double? thumbSize;
 
-  final double initialHue;
+  final double? initialHue;
 
   @override
   _HuePickerState createState() => _HuePickerState();
 }
 
 class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
-  AnimationController _hueController;
-  AnimationController _scaleController;
-  Animation<Offset> _offset;
+  late AnimationController _hueController;
+  late AnimationController _scaleController;
+  late Animation<Offset> _offset;
 
   @override
   Widget build(BuildContext context) {
@@ -327,14 +327,14 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
       onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
       child: SizedBox(
-        width: widget.size.width,
-        height: widget.size.height,
+        width: widget.size!.width,
+        height: widget.size!.height,
         child: Stack(
           children: <Widget>[
             SizedBox.expand(
               child: Padding(
                 padding: EdgeInsets.all(
-                  widget.thumbSize / 2 - widget.strokeWidth,
+                  widget.thumbSize! / 2 - widget.strokeWidth!,
                 ),
                 child: CustomPaint(
                   painter: _CirclePickerPainter(widget.strokeWidth),
@@ -347,7 +347,7 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
                 return Positioned(
                   left: _offset.value.dx,
                   top: _offset.value.dy,
-                  child: child,
+                  child: child!,
                 );
               },
               child: AnimatedBuilder(
@@ -374,13 +374,13 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    final minSize = min(widget.size.width, widget.size.height);
+    final minSize = min(widget.size!.width, widget.size!.height);
     _hueController = AnimationController(
       vsync: this,
-      value: widget.initialHue * pi / 180,
+      value: widget.initialHue! * pi / 180,
       lowerBound: 0,
       upperBound: 2 * pi,
-    )..addListener(() => widget.onChanged(_hueController.value));
+    )..addListener(() => widget.onChanged!(_hueController.value));
     _scaleController = AnimationController(
       vsync: this,
       value: 1,
@@ -389,7 +389,7 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
       duration: Duration(milliseconds: 50),
     );
     _offset = _CircleTween(
-      minSize / 2 - widget.thumbSize / 2,
+      minSize / 2 - widget.thumbSize! / 2,
     ).animate(_hueController);
   }
 
@@ -408,8 +408,8 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
 
   void _updatePosition(Offset position) {
     final radians = atan2(
-      position.dy - widget.size.height / 2,
-      position.dx - widget.size.width / 2,
+      position.dy - widget.size!.height / 2,
+      position.dx - widget.size!.width / 2,
     );
     _hueController.value = radians % (2 * pi);
   }
@@ -440,12 +440,12 @@ class _CirclePickerPainter extends CustomPainter {
     this.strokeWidth,
   );
 
-  final double strokeWidth;
+  final double? strokeWidth;
 
   @override
   void paint(Canvas canvas, Size size) {
     Offset center = Offset(size.width / 2, size.height / 2);
-    double radio = min(size.width, size.height) / 2 - strokeWidth;
+    double radio = min(size.width, size.height) / 2 - strokeWidth!;
 
     const sweepGradient = SweepGradient(
       colors: const [
@@ -468,7 +468,7 @@ class _CirclePickerPainter extends CustomPainter {
       radio,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = strokeWidth * 2
+        ..strokeWidth = strokeWidth! * 2
         ..shader = sweepShader,
     );
   }
@@ -478,11 +478,11 @@ class _CirclePickerPainter extends CustomPainter {
 }
 
 class _Thumb extends StatelessWidget {
-  const _Thumb({Key key, this.size, this.color}) : super(key: key);
+  const _Thumb({Key? key, this.size, this.color}) : super(key: key);
 
-  final double size;
+  final double? size;
 
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -502,8 +502,8 @@ class _Thumb extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: Container(
-        width: size - 6,
-        height: size - 6,
+        width: size! - 6,
+        height: size! - 6,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: color,
