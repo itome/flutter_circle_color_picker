@@ -10,6 +10,7 @@ class CircleColorPicker extends StatefulWidget {
   const CircleColorPicker({
     Key? key,
     this.onChanged,
+    this.onEnded,
     this.size = const Size(280, 280),
     this.strokeWidth = 2,
     this.thumbSize = 32,
@@ -26,6 +27,11 @@ class CircleColorPicker extends StatefulWidget {
   ///
   /// This callback called with latest color that user selected.
   final ValueChanged<Color>? onChanged;
+
+  /// Called when drag ended.
+  ///
+  /// This callback called with latest color that user selected.
+  final ValueChanged<Color>? onEnded;
 
   /// The size of widget.
   /// Draggable area is thumb widget is included to the size,
@@ -95,6 +101,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
             size: widget.size,
             strokeWidth: widget.strokeWidth,
             thumbSize: widget.thumbSize,
+            onEnded: _onEnded,
             onChanged: (hue) {
               _hueController.value = hue * 180 / pi;
             },
@@ -138,6 +145,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                           width: 140,
                           thumbSize: 26,
                           hue: _hueController.value,
+                          onEnded: _onEnded,
                           onChanged: (lightness) {
                             _lightnessController.value = lightness;
                           },
@@ -174,6 +182,10 @@ class _CircleColorPickerState extends State<CircleColorPicker>
   void _onColorChanged() {
     widget.onChanged?.call(_color);
   }
+
+  void _onEnded() {
+    widget.onEnded?.call(_color);
+  }
 }
 
 class _LightnessSlider extends StatefulWidget {
@@ -182,6 +194,7 @@ class _LightnessSlider extends StatefulWidget {
     this.hue,
     this.width,
     this.onChanged,
+    this.onEnded,
     this.thumbSize,
     this.initialLightness,
   }) : super(key: key);
@@ -191,6 +204,8 @@ class _LightnessSlider extends StatefulWidget {
   final double? width;
 
   final ValueChanged<double>? onChanged;
+
+  final VoidCallback? onEnded;
 
   final double? thumbSize;
 
@@ -204,7 +219,7 @@ class _LightnessSliderState extends State<_LightnessSlider>
     with TickerProviderStateMixin {
   late AnimationController _lightnessController;
   late AnimationController _scaleController;
-  Timer? _scaleDownTimer;
+  Timer? _cancelTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -290,8 +305,8 @@ class _LightnessSliderState extends State<_LightnessSlider>
   }
 
   void _onStart(DragStartDetails details) {
-    _scaleDownTimer?.cancel();
-    _scaleDownTimer = null;
+    _cancelTimer?.cancel();
+    _cancelTimer = null;
     _lightnessController.value = details.localPosition.dx / widget.width!;
   }
 
@@ -301,13 +316,17 @@ class _LightnessSliderState extends State<_LightnessSlider>
 
   void _onEnd(DragEndDetails details) {
     _scaleController.forward();
+    widget.onEnded?.call();
   }
 
   void _onCancel() {
     // ScaleDown Animation cancelled if onDragStart called immediately
-    _scaleDownTimer = Timer(
+    _cancelTimer = Timer(
       const Duration(milliseconds: 5),
-      () => _scaleController.forward(),
+      () {
+        _scaleController.forward();
+        widget.onEnded?.call();
+      },
     );
   }
 }
@@ -316,6 +335,7 @@ class _HuePicker extends StatefulWidget {
   const _HuePicker({
     Key? key,
     this.onChanged,
+    this.onEnded,
     this.size,
     this.strokeWidth,
     this.thumbSize,
@@ -323,6 +343,8 @@ class _HuePicker extends StatefulWidget {
   }) : super(key: key);
 
   final ValueChanged<double>? onChanged;
+
+  final VoidCallback? onEnded;
 
   final Size? size;
 
@@ -340,7 +362,7 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
   late AnimationController _hueController;
   late AnimationController _scaleController;
   late Animation<Offset> _offset;
-  Timer? _scaleDownTimer;
+  Timer? _cancelTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -426,8 +448,8 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
   }
 
   void _onStart(DragStartDetails details) {
-    _scaleDownTimer?.cancel();
-    _scaleDownTimer = null;
+    _cancelTimer?.cancel();
+    _cancelTimer = null;
     _updatePosition(details.localPosition);
   }
 
@@ -437,13 +459,17 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
 
   void _onEnd(DragEndDetails details) {
     _scaleController.forward();
+    widget.onEnded?.call();
   }
 
   void _onCancel() {
     // ScaleDown Animation cancelled if onDragStart called immediately
-    _scaleDownTimer = Timer(
+    _cancelTimer = Timer(
       const Duration(milliseconds: 5),
-      () => _scaleController.forward(),
+      () {
+        _scaleController.forward();
+        widget.onEnded?.call();
+      },
     );
   }
 
