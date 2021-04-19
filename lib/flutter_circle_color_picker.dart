@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -203,13 +204,19 @@ class _LightnessSliderState extends State<_LightnessSlider>
     with TickerProviderStateMixin {
   late AnimationController _lightnessController;
   late AnimationController _scaleController;
+  Timer? _scaleDownTimer;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPanStart: _onPanStart,
-      onPanUpdate: _onPanUpdate,
-      onPanEnd: _onPanEnd,
+      onPanDown: _onDown,
+      onPanCancel: _onCancel,
+      onHorizontalDragStart: _onStart,
+      onHorizontalDragUpdate: _onUpdate,
+      onHorizontalDragEnd: _onEnd,
+      onVerticalDragStart: _onStart,
+      onVerticalDragUpdate: _onUpdate,
+      onVerticalDragEnd: _onEnd,
       child: SizedBox(
         width: widget.width,
         height: widget.thumbSize,
@@ -277,17 +284,31 @@ class _LightnessSliderState extends State<_LightnessSlider>
     );
   }
 
-  void _onPanStart(DragStartDetails details) {
+  void _onDown(DragDownDetails details) {
     _scaleController.reverse();
     _lightnessController.value = details.localPosition.dx / widget.width!;
   }
 
-  void _onPanUpdate(DragUpdateDetails details) {
+  void _onStart(DragStartDetails details) {
+    _scaleDownTimer?.cancel();
+    _scaleDownTimer = null;
     _lightnessController.value = details.localPosition.dx / widget.width!;
   }
 
-  void _onPanEnd(DragEndDetails details) {
+  void _onUpdate(DragUpdateDetails details) {
+    _lightnessController.value = details.localPosition.dx / widget.width!;
+  }
+
+  void _onEnd(DragEndDetails details) {
     _scaleController.forward();
+  }
+
+  void _onCancel() {
+    // ScaleDown Animation cancelled if onDragStart called immediately
+    _scaleDownTimer = Timer(
+      const Duration(milliseconds: 5),
+      () => _scaleController.forward(),
+    );
   }
 }
 
@@ -319,13 +340,19 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
   late AnimationController _hueController;
   late AnimationController _scaleController;
   late Animation<Offset> _offset;
+  Timer? _scaleDownTimer;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPanStart: _onPanStart,
-      onPanUpdate: _onPanUpdate,
-      onPanEnd: _onPanEnd,
+      onPanDown: _onDown,
+      onPanCancel: _onCancel,
+      onHorizontalDragStart: _onStart,
+      onHorizontalDragUpdate: _onUpdate,
+      onHorizontalDragEnd: _onEnd,
+      onVerticalDragStart: _onStart,
+      onVerticalDragUpdate: _onUpdate,
+      onVerticalDragEnd: _onEnd,
       child: SizedBox(
         width: widget.size!.width,
         height: widget.size!.height,
@@ -393,17 +420,31 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
     ).animate(_hueController);
   }
 
-  void _onPanStart(DragStartDetails details) {
+  void _onDown(DragDownDetails details) {
     _scaleController.reverse();
     _updatePosition(details.localPosition);
   }
 
-  void _onPanUpdate(DragUpdateDetails details) {
+  void _onStart(DragStartDetails details) {
+    _scaleDownTimer?.cancel();
+    _scaleDownTimer = null;
     _updatePosition(details.localPosition);
   }
 
-  void _onPanEnd(DragEndDetails details) {
+  void _onUpdate(DragUpdateDetails details) {
+    _updatePosition(details.localPosition);
+  }
+
+  void _onEnd(DragEndDetails details) {
     _scaleController.forward();
+  }
+
+  void _onCancel() {
+    // ScaleDown Animation cancelled if onDragStart called immediately
+    _scaleDownTimer = Timer(
+      const Duration(milliseconds: 5),
+      () => _scaleController.forward(),
+    );
   }
 
   void _updatePosition(Offset position) {
