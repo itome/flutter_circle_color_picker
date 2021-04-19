@@ -37,6 +37,11 @@ A beautiful circle color picker for flutter.
   /// This callback called with latest color that user selected.
   final ValueChanged<Color>? onEnded;
 
+  /// An object to controll picker color dynamically.
+  ///
+  /// Provide initialColor if needed.
+  final CircleColorPickerController? controller;
+
   /// The size of widget.
   /// Draggable area is thumb widget is included to the size,
   /// so circle is smaller than the size.
@@ -53,12 +58,6 @@ A beautiful circle color picker for flutter.
   ///
   /// Default value is 32.
   final double thumbSize;
-
-  /// Initial color for picker.
-  /// [onChanged] callback won't be called with initial value.
-  ///
-  /// Default value is Red.
-  final Color initialColor;
 
   /// Text style config
   ///
