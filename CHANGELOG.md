@@ -3,6 +3,7 @@
 * Add CircleColorPickerController to control picker color from outside.
 * Remove initialColor, use CircleColorPickerController instead.
 * Sound null safety (Thanks to @tsonnen)
+* Fix picker in scroll view bug. https://github.com/itome/flutter_circle_color_picker/pull/20
 
 ## 0.2.0
 
