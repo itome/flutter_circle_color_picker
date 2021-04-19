@@ -10,6 +10,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Color _currentColor = Colors.blue;
+  final _controller = CircleColorPickerController(
+    initialColor: Colors.blue,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -19,39 +22,39 @@ class _MyAppState extends State<MyApp> {
           backgroundColor: _currentColor,
           title: const Text('Circle color picker sample'),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Center(
-                child: CircleColorPicker(
-                  initialColor: _currentColor,
-                  onChanged: _onColorChanged,
-                ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const SizedBox(height: 48),
+            Center(
+              child: CircleColorPicker(
+                controller: _controller,
+                onChanged: (color) {
+                  setState(() => _currentColor = color);
+                },
               ),
-              Center(
-                child: CircleColorPicker(
-                  initialColor: _currentColor,
-                  onChanged: _onColorChanged,
-                  colorCodeBuilder: (context, color) {
-                    return Text(
-                      'rgb(${color.red}, ${color.green}, ${color.blue})',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    );
-                  },
+            ),
+            const SizedBox(height: 48),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextButton(
+                  onPressed: () => _controller.color = Colors.blue,
+                  child: Text('BLUE', style: TextStyle(color: Colors.blue)),
                 ),
-              ),
-            ],
-          ),
+                TextButton(
+                  onPressed: () => _controller.color = Colors.green,
+                  child: Text('GREEN', style: TextStyle(color: Colors.green)),
+                ),
+                TextButton(
+                  onPressed: () => _controller.color = Colors.red,
+                  child: Text('RED', style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  void _onColorChanged(Color color) {
-    setState(() => _currentColor = color);
   }
 }
