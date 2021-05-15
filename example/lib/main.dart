@@ -9,10 +9,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Color _currentColor = Colors.blue;
+  Color _currentColor = Colors.grey.shade500;
   final _controller = CircleColorPickerController(
-    initialColor: Colors.blue,
-  );
+      initialColor: Colors.grey.shade500, grayscale: false);
 
   @override
   Widget build(BuildContext context) {
@@ -33,24 +32,6 @@ class _MyAppState extends State<MyApp> {
                   setState(() => _currentColor = color);
                 },
               ),
-            ),
-            const SizedBox(height: 48),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextButton(
-                  onPressed: () => _controller.color = Colors.blue,
-                  child: Text('BLUE', style: TextStyle(color: Colors.blue)),
-                ),
-                TextButton(
-                  onPressed: () => _controller.color = Colors.green,
-                  child: Text('GREEN', style: TextStyle(color: Colors.green)),
-                ),
-                TextButton(
-                  onPressed: () => _controller.color = Colors.red,
-                  child: Text('RED', style: TextStyle(color: Colors.red)),
-                ),
-              ],
             ),
           ],
         ),
