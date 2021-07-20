@@ -150,9 +150,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                                   '#${_color.value.toRadixString(16).substring(2)}',
                                   style: widget.textStyle,
                                 ),
-                        SizedBox(
-                          height: widget.disableColorCode ? 0 : 16,
-                        ),
+                        const SizedBox(height: 16),
                         Container(
                           width: 64,
                           height: 64,
@@ -169,9 +167,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: widget.disableLightnessSlider ? 0 : 16,
-                        ),
+                        const SizedBox(height: 16),
                         if (!widget.disableLightnessSlider)
                           _LightnessSlider(
                             width: 140,
