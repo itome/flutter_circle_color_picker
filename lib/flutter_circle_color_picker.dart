@@ -28,6 +28,8 @@ class CircleColorPicker extends StatefulWidget {
     this.strokeWidth = 2,
     this.thumbSize = 32,
     this.controller,
+    this.disableLightnessSlider = false,
+    this.disableColorCode = false,
     this.textStyle = const TextStyle(
       fontSize: 24,
       fontWeight: FontWeight.bold,
@@ -78,6 +80,16 @@ class CircleColorPicker extends StatefulWidget {
   ///
   /// Default is Text widget that shows rgb strings;
   final ColorCodeBuilder? colorCodeBuilder;
+
+  /// Determines whether to draw the [colorCodeBuilder]
+  ///
+  /// Default value is false
+  final bool disableColorCode;
+
+  /// Determines whether to draw the [_LightnessSlider]
+  ///
+  /// Default value is false
+  final bool disableLightnessSlider;
 
   Color get initialColor =>
       controller?.color ?? const Color.fromARGB(255, 255, 0, 0);
@@ -131,13 +143,16 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        widget.colorCodeBuilder != null
-                            ? widget.colorCodeBuilder!(context, _color)
-                            : Text(
-                                '#${_color.value.toRadixString(16).substring(2)}',
-                                style: widget.textStyle,
-                              ),
-                        const SizedBox(height: 16),
+                        if (!widget.disableColorCode)
+                          widget.colorCodeBuilder != null
+                              ? widget.colorCodeBuilder!(context, _color)
+                              : Text(
+                                  '#${_color.value.toRadixString(16).substring(2)}',
+                                  style: widget.textStyle,
+                                ),
+                        SizedBox(
+                          height: widget.disableColorCode ? 0 : 16,
+                        ),
                         Container(
                           width: 64,
                           height: 64,
@@ -154,17 +169,20 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        _LightnessSlider(
-                          width: 140,
-                          thumbSize: 26,
-                          hue: _hueController.value,
-                          lightness: _lightnessController.value,
-                          onEnded: _onEnded,
-                          onChanged: (lightness) {
-                            _lightnessController.value = lightness;
-                          },
+                        SizedBox(
+                          height: widget.disableLightnessSlider ? 0 : 16,
                         ),
+                        if (!widget.disableLightnessSlider)
+                          _LightnessSlider(
+                            width: 140,
+                            thumbSize: 26,
+                            hue: _hueController.value,
+                            lightness: _lightnessController.value,
+                            onEnded: _onEnded,
+                            onChanged: (lightness) {
+                              _lightnessController.value = lightness;
+                            },
+                          ),
                       ],
                     ),
                   );
