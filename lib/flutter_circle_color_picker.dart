@@ -24,6 +24,7 @@ class CircleColorPicker extends StatefulWidget {
     Key? key,
     this.onChanged,
     this.onEnded,
+    this.onTap,
     this.size = const Size(280, 280),
     this.strokeWidth = 2,
     this.thumbSize = 32,
@@ -45,6 +46,11 @@ class CircleColorPicker extends StatefulWidget {
   ///
   /// This callback called with latest color that user selected.
   final ValueChanged<Color>? onEnded;
+
+  /// Called when the center circle is tapped.
+  ///
+  /// This callback called with latest color that user selected.
+  final ValueChanged<Color>? onTap;
 
   /// An object to controll picker color dynamically.
   ///
@@ -138,21 +144,28 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                                 style: widget.textStyle,
                               ),
                         const SizedBox(height: 16),
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            color: _color,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              width: 3,
-                              color: HSLColor.fromColor(_color)
-                                  .withLightness(
-                                    _lightnessController.value * 4 / 5,
-                                  )
-                                  .toColor(),
+                        Material(
+                          child: Ink(
+                            child: InkWell(
+                                customBorder: CircleBorder(),
+                                onTap: (widget.onTap != null)
+                                    ? () => widget.onTap?.call(_color)
+                                    : null),
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              color: _color,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  width: 3,
+                                  color: HSLColor.fromColor(_color)
+                                      .withLightness(
+                                        _lightnessController.value * 4 / 5,
+                                      )
+                                      .toColor()),
                             ),
                           ),
+                          shape: const CircleBorder(),
                         ),
                         const SizedBox(height: 16),
                         _LightnessSlider(
