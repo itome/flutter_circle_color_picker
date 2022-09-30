@@ -37,6 +37,11 @@ A beautiful circle color picker for flutter. [Online Demo](https://itome.github.
   /// This callback called with latest color that user selected.
   final ValueChanged<Color>? onEnded;
 
+/// Called when the center circle is tapped.
+///
+/// This callback called with latest color that user selected.
+final ValueChanged<Color>? onTap;
+
   /// An object to controll picker color dynamically.
   ///
   /// Provide initialColor if needed.
