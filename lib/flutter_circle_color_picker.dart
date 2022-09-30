@@ -144,23 +144,29 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                                 style: widget.textStyle,
                               ),
                         const SizedBox(height: 16),
-                        InkWell(
-                            child: Container(
-                              width: 64,
-                              height: 64,
-                              decoration: BoxDecoration(
-                                color: _color,
-                                shape: BoxShape.circle,
-                                border: Border.all(
+                        Material(
+                          child: Ink(
+                            child: InkWell(
+                                customBorder: CircleBorder(),
+                                onTap: (widget.onTap != null)
+                                    ? () => widget.onTap?.call(_color)
+                                    : null),
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              color: _color,
+                              shape: BoxShape.circle,
+                              border: Border.all(
                                   width: 3,
                                   color: HSLColor.fromColor(_color)
                                       .withLightness(
-                                    _lightnessController.value * 4 / 5,
-                                  )
-                                      .toColor(),
-                                ),
-                              ),
-                            ), onTap: _onTap),
+                                        _lightnessController.value * 4 / 5,
+                                      )
+                                      .toColor()),
+                            ),
+                          ),
+                          shape: const CircleBorder(),
+                        ),
                         const SizedBox(height: 16),
                         _LightnessSlider(
                           width: 140,
@@ -215,10 +221,6 @@ class _CircleColorPickerState extends State<CircleColorPicker>
 
   void _onEnded() {
     widget.onEnded?.call(_color);
-  }
-
-  void _onTap() {
-    widget.onTap?.call(_color);
   }
 
   void _setColor() {
