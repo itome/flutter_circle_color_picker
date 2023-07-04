@@ -139,6 +139,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                               ),
                         const SizedBox(height: 16),
                         Container(
+                          key: const Key('center'),
                           width: 64,
                           height: 64,
                           decoration: BoxDecoration(
@@ -290,7 +291,8 @@ class _LightnessSliderState extends State<_LightnessSlider>
               left: widget.lightness * (widget.width - widget.thumbSize),
               child: ScaleTransition(
                 scale: _scaleController,
-                child: _Thumb(
+                child: ColorPickerThumb(
+                  key: const Key('lightness'),
                   size: widget.thumbSize,
                   color: HSLColor.fromAHSL(
                     1,
@@ -417,7 +419,8 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
               top: offset.dy,
               child: ScaleTransition(
                 scale: _scaleController,
-                child: _Thumb(
+                child: ColorPickerThumb(
+                  key: const Key('hue'),
                   size: widget.thumbSize,
                   color: HSLColor.fromAHSL(1, widget.hue, 1, 0.5).toColor(),
                 ),
@@ -544,8 +547,9 @@ class _CirclePickerPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
-class _Thumb extends StatelessWidget {
-  const _Thumb({
+@visibleForTesting
+class ColorPickerThumb extends StatelessWidget {
+  const ColorPickerThumb({
     Key? key,
     required this.size,
     required this.color,
