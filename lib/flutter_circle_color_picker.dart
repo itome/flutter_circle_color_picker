@@ -208,6 +208,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
   void _onColorChanged() {
     widget.onChanged?.call(_color);
     widget.controller?.color = _color;
+    setState(() {});
   }
 
   void _onEnded() {
@@ -216,9 +217,21 @@ class _CircleColorPickerState extends State<CircleColorPicker>
 
   void _setColor() {
     if (widget.controller != null && widget.controller!.color != _color) {
+      widget.onChanged?.call(widget.controller!.color);
+
+      _hueController.removeListener(_onColorChanged);
+      _lightnessController.removeListener(_onColorChanged);
+
       final hslColor = HSLColor.fromColor(widget.controller!.color);
       _hueController.value = hslColor.hue;
       _lightnessController.value = hslColor.lightness;
+      _saturation = hslColor.saturation;
+      _alpha = hslColor.alpha;
+
+      _hueController.addListener(_onColorChanged);
+      _lightnessController.addListener(_onColorChanged);
+
+      setState(() {});
     }
   }
 }
