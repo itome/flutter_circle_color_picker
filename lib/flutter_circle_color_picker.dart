@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 typedef ColorCodeBuilder = Widget Function(BuildContext context, Color color);
 
@@ -46,7 +45,7 @@ class CircleColorPicker extends StatefulWidget {
   /// This callback called with latest color that user selected.
   final ValueChanged<Color>? onEnded;
 
-  /// An object to controll picker color dynamically.
+  /// An object to control picker color dynamically.
   ///
   /// Provide initialColor if needed.
   final CircleColorPickerController? controller;
@@ -94,12 +93,14 @@ class _CircleColorPickerState extends State<CircleColorPicker>
     with TickerProviderStateMixin {
   late AnimationController _lightnessController;
   late AnimationController _hueController;
+  late double _saturation;
+  late double _alpha;
 
   Color get _color {
     return HSLColor.fromAHSL(
-      1,
+      _alpha,
       _hueController.value,
-      1,
+      _saturation,
       _lightnessController.value,
     ).toColor();
   }
@@ -193,6 +194,8 @@ class _CircleColorPickerState extends State<CircleColorPicker>
       lowerBound: 0,
       upperBound: 1,
     )..addListener(_onColorChanged);
+    _saturation = HSLColor.fromColor(widget.initialColor).saturation;
+    _alpha = HSLColor.fromColor(widget.initialColor).alpha;
     widget.controller?.addListener(_setColor);
   }
 
