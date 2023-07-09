@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 typedef ColorCodeBuilder = Widget Function(BuildContext context, Color color);
 
@@ -46,7 +45,7 @@ class CircleColorPicker extends StatefulWidget {
   /// This callback called with latest color that user selected.
   final ValueChanged<Color>? onEnded;
 
-  /// An object to controll picker color dynamically.
+  /// An object to control picker color dynamically.
   ///
   /// Provide initialColor if needed.
   final CircleColorPickerController? controller;
@@ -94,12 +93,14 @@ class _CircleColorPickerState extends State<CircleColorPicker>
     with TickerProviderStateMixin {
   late AnimationController _lightnessController;
   late AnimationController _hueController;
+  late double _saturation;
+  late double _alpha;
 
   Color get _color {
     return HSLColor.fromAHSL(
-      1,
+      _alpha,
       _hueController.value,
-      1,
+      _saturation,
       _lightnessController.value,
     ).toColor();
   }
@@ -139,6 +140,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                               ),
                         const SizedBox(height: 16),
                         Container(
+                          key: const Key('center'),
                           width: 64,
                           height: 64,
                           decoration: BoxDecoration(
@@ -192,6 +194,8 @@ class _CircleColorPickerState extends State<CircleColorPicker>
       lowerBound: 0,
       upperBound: 1,
     )..addListener(_onColorChanged);
+    _saturation = HSLColor.fromColor(widget.initialColor).saturation;
+    _alpha = HSLColor.fromColor(widget.initialColor).alpha;
     widget.controller?.addListener(_setColor);
   }
 
@@ -204,6 +208,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
   void _onColorChanged() {
     widget.onChanged?.call(_color);
     widget.controller?.color = _color;
+    setState(() {});
   }
 
   void _onEnded() {
@@ -212,9 +217,21 @@ class _CircleColorPickerState extends State<CircleColorPicker>
 
   void _setColor() {
     if (widget.controller != null && widget.controller!.color != _color) {
+      widget.onChanged?.call(widget.controller!.color);
+
+      _hueController.removeListener(_onColorChanged);
+      _lightnessController.removeListener(_onColorChanged);
+
       final hslColor = HSLColor.fromColor(widget.controller!.color);
       _hueController.value = hslColor.hue;
       _lightnessController.value = hslColor.lightness;
+      _saturation = hslColor.saturation;
+      _alpha = hslColor.alpha;
+
+      _hueController.addListener(_onColorChanged);
+      _lightnessController.addListener(_onColorChanged);
+
+      setState(() {});
     }
   }
 }
@@ -290,7 +307,8 @@ class _LightnessSliderState extends State<_LightnessSlider>
               left: widget.lightness * (widget.width - widget.thumbSize),
               child: ScaleTransition(
                 scale: _scaleController,
-                child: _Thumb(
+                child: ColorPickerThumb(
+                  key: const Key('lightness'),
                   size: widget.thumbSize,
                   color: HSLColor.fromAHSL(
                     1,
@@ -417,7 +435,8 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
               top: offset.dy,
               child: ScaleTransition(
                 scale: _scaleController,
-                child: _Thumb(
+                child: ColorPickerThumb(
+                  key: const Key('hue'),
                   size: widget.thumbSize,
                   color: HSLColor.fromAHSL(1, widget.hue, 1, 0.5).toColor(),
                 ),
@@ -544,8 +563,9 @@ class _CirclePickerPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
-class _Thumb extends StatelessWidget {
-  const _Thumb({
+@visibleForTesting
+class ColorPickerThumb extends StatelessWidget {
+  const ColorPickerThumb({
     Key? key,
     required this.size,
     required this.color,
