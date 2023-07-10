@@ -134,7 +134,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
                         widget.colorCodeBuilder != null
                             ? widget.colorCodeBuilder!(context, _color)
                             : Text(
-                                '#${_color.value.toRadixString(16).substring(2)}',
+                                '#${_color.value.toRadixString(16).padLeft(8, "0").substring(2)}',
                                 style: widget.textStyle,
                               ),
                         const SizedBox(height: 16),
