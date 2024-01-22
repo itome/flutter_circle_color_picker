@@ -352,7 +352,7 @@ class _LightnessSliderState extends State<_LightnessSlider>
 }
 
 class _HuePicker extends StatefulWidget {
-  const _HuePicker({
+  _HuePicker({
     Key? key,
     required this.hue,
     required this.onChanged,
@@ -362,7 +362,7 @@ class _HuePicker extends StatefulWidget {
     required this.thumbSize,
   }) : super(key: key);
 
-  final double hue;
+  double hue;
 
   final ValueChanged<double> onChanged;
 
@@ -478,7 +478,11 @@ class _HuePickerState extends State<_HuePicker> with TickerProviderStateMixin {
       position.dy - widget.size.height / 2,
       position.dx - widget.size.width / 2,
     );
-    widget.onChanged(radians % (2 * pi) * 180 / pi);
+    var value = radians % (2 * pi) * 180 / pi;
+    widget.onChanged(value);
+    setState(() {
+      widget.hue = value;
+    });
   }
 }
 
