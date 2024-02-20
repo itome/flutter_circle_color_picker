@@ -215,6 +215,7 @@ class _CircleColorPickerState extends State<CircleColorPicker>
       final hslColor = HSLColor.fromColor(widget.controller!.color);
       _hueController.value = hslColor.hue;
       _lightnessController.value = hslColor.lightness;
+      setState(() {});
     }
   }
 }
